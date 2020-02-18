@@ -5,12 +5,42 @@ import android.os.Parcelable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Contects implements Parcelable {
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
+public class Contects implements Parcelable{
+    @PrimaryKey
+     @NonNull
     String name;
     String lastname;
     int imeg;
     String job;
     boolean isfavorite;
+    int rating;
+
+
+    protected Contects(Parcel in) {
+        name = in.readString();
+        lastname = in.readString();
+        imeg = in.readInt();
+        job = in.readString();
+        isfavorite = in.readByte() != 0;
+        rating = in.readInt();
+    }
+
+    public static final Creator<Contects> CREATOR = new Creator<Contects>() {
+        @Override
+        public Contects createFromParcel(Parcel in) {
+            return new Contects(in);
+        }
+
+        @Override
+        public Contects[] newArray(int size) {
+            return new Contects[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -52,33 +82,22 @@ public class Contects implements Parcelable {
         this.isfavorite = isfavorite;
     }
 
-    public Contects(String name, String lastname, int imeg, String job, boolean isfavorite) {
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public Contects(String name, String lastname, int imeg, String job, boolean isfavorite, int rating) {
         this.name = name;
         this.lastname = lastname;
         this.imeg = imeg;
         this.job = job;
         this.isfavorite = isfavorite;
+        this.rating = rating;
     }
-
-    protected Contects(Parcel in) {
-        name = in.readString();
-        lastname = in.readString();
-        imeg = in.readInt();
-        job = in.readString();
-        isfavorite = in.readByte() != 0;
-    }
-
-    public static final Creator<Contects> CREATOR = new Creator<Contects>() {
-        @Override
-        public Contects createFromParcel(Parcel in) {
-            return new Contects(in);
-        }
-
-        @Override
-        public Contects[] newArray(int size) {
-            return new Contects[size];
-        }
-    };
 
     @Override
     public int describeContents() {
@@ -92,5 +111,6 @@ public class Contects implements Parcelable {
         dest.writeInt(imeg);
         dest.writeString(job);
         dest.writeByte((byte) (isfavorite ? 1 : 0));
+        dest.writeInt(rating);
     }
 }
