@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class MycontectsFragment extends Fragment {
+public class  MycontectsFragment extends Fragment {
     private static final String TAG = MycontectsFragment.class.getSimpleName();
     private RecyclerView myrecycleviiew;
     private RecyclerView.LayoutManager mylayotmeneger;
-    private RecyclerView.Adapter myAdapter;
+    public AdapterFragmentContex myAdapter;
     private boolean isfavorite;
     ArrayList<Contects> myListContects = new ArrayList<>();
     ArrayList<Contects> listallcontectcs;
@@ -87,9 +87,19 @@ public class MycontectsFragment extends Fragment {
             myAdapter = new AdapterFragmentContex(getContext(), myListContects);
 
         } else {
-            myListContects = simplelist();
+            ArrayList<Contects> myListContecsDb;
+            myListContecsDb = (ArrayList<Contects>) AppDataBase.getINSTANCE(getActivity()).myDeoContects().getallcontects();
+            if(myListContecsDb.size() > 0){
+                myListContects = myListContecsDb;
+
+            }
+            else {
+                myListContects = simplelist();
+            }
+
             myAdapter = new AdapterFragmentContex(getContext(), myListContects);
         }
+
 
         myrecycleviiew.setAdapter(myAdapter);
 

@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,16 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 
-public class AdapterFragmentContex extends RecyclerView.Adapter<AdapterFragmentContex.ViewHolder> {
+public class AdapterFragmentContex extends RecyclerView.Adapter<AdapterFragmentContex.ViewHolder> implements Filterable {
     private LayoutInflater inflater;
     private ArrayList<Contects> mycontects;
-
+    private ArrayList<Contects> mylistFilterContects = new ArrayList<>();
     Context mycontext;
+//    public  contectsFilter mycontecsFilter ;
 
     public AdapterFragmentContex(Context context, ArrayList<Contects> mycontects) {
         this.mycontext = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mycontects = mycontects;
+        this.mylistFilterContects.addAll(mycontects);
     }
 
     @NonNull
@@ -38,16 +42,50 @@ public class AdapterFragmentContex extends RecyclerView.Adapter<AdapterFragmentC
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setholder(mycontects.get(position));
-            int a  = mycontects.size();
+        holder.setholder(mylistFilterContects.get(position));
+            int a  = mylistFilterContects.size();
 
     }
 
     @Override
     public int getItemCount() {
 
-        return mycontects.size();
+        return mylistFilterContects.size();
 
+    }
+
+    @Override
+    public Filter getFilter() {
+//        mycontecsFilter = new contectsFilter();
+//        return mycontecsFilter;
+
+        // CREAT FILTER OF SERCHVIEW ANONIMI
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                ArrayList<Contects> listFilterAllContects = new ArrayList<>();
+               mylistFilterContects.clear();
+                for (Contects myContectsOne : mycontects) {
+                    if (myContectsOne.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        listFilterAllContects.add(myContectsOne);
+                    }
+
+                }
+                results.values = listFilterAllContects;
+                results.count = listFilterAllContects.size();
+                return results;
+            }
+
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mylistFilterContects =(ArrayList<Contects>) results.values;
+                notifyDataSetChanged();
+
+
+            }
+        };
     }
 
 
@@ -82,5 +120,30 @@ public class AdapterFragmentContex extends RecyclerView.Adapter<AdapterFragmentC
 
         }
     }
+    //Creat filter of serchview by inner claes extens filter
+//    public class contectsFilter extends Filter{
+//
+//        @Override
+//        protected FilterResults performFiltering(CharSequence constraint) {
+//            FilterResults results = new FilterResults();
+//            ArrayList<Contects> listFilterAllContects = new ArrayList<>();
+//            for (Contects myContectsOne: mycontects) {
+//                if (myContectsOne.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
+//                    listFilterAllContects.add(myContectsOne);
+//                }
+//
+//            }
+//            results.values = listFilterAllContects;
+//            results.count = listFilterAllContects.size();
+//            return results;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence constraint, FilterResults results) {
+//            mylistFilterContects =(ArrayList<Contects>) results.values;
+//            notifyDataSetChanged();
+//
+//        }
+//    }
 
 }
